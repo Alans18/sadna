@@ -8,6 +8,7 @@ import { User } from '@/types/user'
 import { useRouter } from 'next/router'
 import dynamic from 'next/dynamic';
 import { setgroups } from 'process'
+import LineCharts from '@/components/line'
 
 
 const inter = Inter({ subsets: ['latin'] })
@@ -16,6 +17,7 @@ const  Home = function(props:any) {
 
   const user = getFromStorage('user') as User
   const [groups,setGroups] = React.useState<{id:number,name:string}[]>([])
+  const [products,setProducts] = React.useState<any[]>([])
   const router=  useRouter()
 
   const onLogout = function(){
@@ -31,9 +33,9 @@ const  Home = function(props:any) {
       })
   })  
   const data = await res.json()
-  console.log(data)
   // Set it in the client
   setGroups(data.groups)
+  setProducts(data.products)
   }
   React.useEffect(()=>{
     if(!user){
@@ -53,10 +55,12 @@ const  Home = function(props:any) {
            <button onClick={onLogout}>logout</button>
         </div>
      
-      <select name="" id="" defaultValue={groups[0]?.name}>
+         <select defaultValue={groups[0]?.name}>
          {groups?.map((gr)=><option key={gr.id} value={gr.id}>{gr.name}</option>)}
         </select> 
+        {products ?   <LineCharts data={products}/> : null }
       </main>
+    
     </>
   )
 }
