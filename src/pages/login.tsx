@@ -1,19 +1,50 @@
-import React, { useState } from "react"
+import { Router, useRouter } from "next/router"
+import React  from "react"
+
 const Login = function(){
 
-    const [users,setUsers] = useState()
-    React.useEffect(()=>{
-        ( async ()=>{
-            const res = await fetch('/api/hello')
-            const data = await res.json()
-            setUsers(data)
-        })()    
-    },[])
+    const emailRef = React.useRef<any>()
+    const [error,setError] = React.useState("")
+    const router = useRouter()
 
+    const onFormSubmit =async function(e:React.FormEvent<HTMLFormElement>){
+        e.preventDefault()
+            try {
+                setError('')
+                const res  =   await fetch("/api/auth",{
+                    method:"POST",
+                    body:JSON.stringify({
+                        email:emailRef.current.value
+                    })
+                })
+                const data = await res.json()
+                if(!res.ok){
+                    throw data.message
+                }
+
+                router.push("/")
+            } catch (error:any) {
+            // show watrinng in tthe client
+             setError(error)
+            }
+
+    }
 
     return <>
-    <pre>{JSON.stringify(users,null,2)}</pre>
+     <h2>Login Page</h2>
+      <form onSubmit={onFormSubmit}>
+        <label htmlFor="email">Email</label>
+        <input ref={emailRef} id="email" type="email" required />
+        <br />
+     <input type="submit"  value="Login"/>
+
+    <p style={{color:"red"}}>  {error}</p>
+    </form>
+
+
     </>
 }
+
+
 
 export default Login
