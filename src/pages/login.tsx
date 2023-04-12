@@ -1,3 +1,4 @@
+import { setSessionStorage } from "@/lib/session-storage"
 import { Router, useRouter } from "next/router"
 import React  from "react"
 
@@ -22,6 +23,7 @@ const Login = function(){
                     throw data.message
                 }
 
+                setSessionStorage("user",data)
                 router.push("/")
             } catch (error:any) {
             // show watrinng in tthe client
