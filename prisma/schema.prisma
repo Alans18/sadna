@@ -11,6 +11,7 @@ model groups {
   pk_id        Int            @id @default(autoincrement())
   group_name   String         @db.VarChar(255)
   date_created DateTime?      @default(now()) @db.Timestamp(6)
+  auth         String?        @db.VarChar(5)
   usergroups   usergroups[]
   userproducts userproducts[]
 }
@@ -48,7 +49,7 @@ model users {
   user_name    String         @db.VarChar(255)
   email        String         @db.VarChar(255)
   date_created DateTime?      @default(now()) @db.Timestamp(6)
-  is_admin     Int
+  role         Int
   usergroups   usergroups[]
   userproducts userproducts[]
 }

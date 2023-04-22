@@ -1,63 +1,50 @@
 import prisma from '@/lib/prisma'
 import type { NextApiRequest, NextApiResponse } from 'next'
 
+
+
+type UsersAndGroups = {
+  pk_id: number,
+  user_name: string,
+  email: string,
+  date_created:string,
+  role: number,
+  fk_user_id: number,
+  fk_group_id: number,
+  group_name: string,
+  auth: string
+}
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
   const {userId,groupId} = JSON.parse(req.body)
   
-  // Try to find the user
-  const dbGropus = await prisma.usergroups.findMany({
-    where:{
-    fk_user_id:userId
-    },select:{
-        groups:{
-            select:{
-                group_name:true,
-                pk_id:true
-            },
-        },
-    
+  const usersGroups = await prisma.$queryRawUnsafe(`
+    select *
+    from users u 
+    join usergroups ug on u.pk_id = ug.fk_user_id
+    join groups g on g.pk_id = ug.fk_group_id
+  `) as UsersAndGroups[]
+  
+  
+  const usersGroupsMap:any = {}
+
+    usersGroups.filter((g)=>g.fk_user_id ===userId ).forEach((d)=>{
+    const groupKey  =d.fk_group_id;
+    usersGroupsMap[groupKey]={
+      groupName:d.group_name,
+      groupId:d.fk_group_id,
+      users:usersGroups.filter((d)=>d.fk_group_id ===groupKey).map((d)=>d.user_name)
     }
   })
+
+
 
   
-const groups = dbGropus.map((gr)=>({name:gr.groups.group_name,id:gr.groups.pk_id}))
 
-  const dbProdcuts = await prisma.userproducts.findMany({
-    where:{
-        fk_group_id:groupId || groups[0].id
-    },
-    select:{
-        amount:true,
-        date_created:true,
-        groups:true,
-        users:{
-            select:{
-                user_name:true
-            }
-        },
-        productcategories:{
-            select:{
-                category_name:true
-            }
-        }
-    }
-  })
 
-//   trasnform data
-
-const products =  dbProdcuts.map((p)=>{
-    return {
-         amount : p.amount,
-         date : p.date_created,
-         groupName : p.groups.group_name,
-         category : p.productcategories.category_name,
-         userName : p.users.user_name
-    }
-})
 
   // return user to the client
-  return res.status(200).json({groups,products})
+  return res.status(200).json({usersGroupsMap})
 }

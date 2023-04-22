@@ -1,22 +1,24 @@
-import Head from 'next/head'
-import Image from 'next/image'
 import { Inter } from 'next/font/google'
-import { GetServerSideProps } from 'next'
 import { clearFromSession, getFromStorage } from '@/lib/session-storage'
 import React from 'react'
 import { User } from '@/types/user'
 import { useRouter } from 'next/router'
 import dynamic from 'next/dynamic';
-import { setgroups } from 'process'
 import LineCharts from '@/components/line'
 
 
+type ServerUsersAndGroups = {
+  groupName:string,
+  groupId:number,
+  users:string[]
+}
 const inter = Inter({ subsets: ['latin'] })
 
 const  Home = function(props:any) {
 
   const user = getFromStorage('user') as User
-  const [groups,setGroups] = React.useState<{id:number,name:string}[]>([])
+  const [groups,setGroups] = React.useState<ServerUsersAndGroups[]>([])
+  const [selectedGroup,setSelectedGroup] = React.useState<any>(null)
   const [products,setProducts] = React.useState<any[]>([])
   const router=  useRouter()
 
@@ -29,13 +31,18 @@ const  Home = function(props:any) {
     const res  =  await fetch("/api/user-data",{
       method:"POST",
       body:JSON.stringify({
-        userId:user.pk_id
+        userId:user.pk_id,
       })
   })  
   const data = await res.json()
   // Set it in the client
-  setGroups(data.groups)
-  setProducts(data.products)
+  setGroups(data.usersGroupsMap)
+ setSelectedGroup(Object.keys(data.usersGroupsMap)[0])
+  }
+
+  const onGroupSelect = function(e:React.ChangeEvent<HTMLSelectElement>){
+    const groupId = e.target.value;
+   setSelectedGroup(groupId)
   }
   React.useEffect(()=>{
     if(!user){
@@ -43,22 +50,34 @@ const  Home = function(props:any) {
       return
     }
     getUserGroups()
+
   },[])
 
+
+  if(!user){
+    return <div>Loading..</div>
+  }
 
 
   return (
     <>
       <main className={inter.className}>
           <div className='home-page--header'>
-        <h1>Hello   <span>{user.user_name || ""} </span> </h1>
+        <h1>Hello   <span>{user?.user_name || ""} </span> </h1>
            <button onClick={onLogout}>logout</button>
         </div>
-     
-         <select defaultValue={groups[0]?.name}>
-         {groups?.map((gr)=><option key={gr.id} value={gr.id}>{gr.name}</option>)}
+
+        {/*Show Groups  */}
+         <select defaultValue={groups[selectedGroup]?.groupName} onChange={onGroupSelect}>
+         {Object.values(groups)?.map((gr)=><option key={gr.groupId} value={gr.groupId}>{gr.groupName}</option>)}
         </select> 
-        {products ?   <LineCharts data={products}/> : null }
+
+        {/* Show Users */}
+        <select defaultValue="all">
+          <option value="all">All</option>
+        {groups[selectedGroup]?.users?.map((user)=><option key={user} value={user}>{user}</option>)}
+        </select>
+        {products ? <LineCharts data={products}/> : null }
       </main>
     
     </>

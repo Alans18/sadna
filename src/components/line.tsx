@@ -19,7 +19,6 @@ const renderCustomizedLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, per
 
 const LineCharts = function(props:Record<string,any>){
     const {data}= props
-    console.log(data)
     return (
         <PieChart width={400} height={400}>
         <Pie
