@@ -18,7 +18,7 @@ model groups {
 
 model productcategories {
   pk_id         Int            @id @default(autoincrement())
-  product_name  String         @db.VarChar(255)
+  // product_name  String         @db.VarChar(255)
   category_name String         @db.VarChar(255)
   userproducts  userproducts[]
 }
@@ -36,11 +36,11 @@ model userproducts {
   pk_id             Int               @id @default(autoincrement())
   fk_user_id        Int               @default(autoincrement())
   fk_group_id       Int               @default(autoincrement())
-  fk_product_id     Int               @default(autoincrement())
+  fk_category_id     Int               @default(autoincrement())
   amount            Int
   date_created      DateTime?         @default(now()) @db.Timestamp(6)
   groups            groups            @relation(fields: [fk_group_id], references: [pk_id], onDelete: NoAction, onUpdate: NoAction)
-  productcategories productcategories @relation(fields: [fk_product_id], references: [pk_id], onDelete: NoAction, onUpdate: NoAction)
+  productcategories productcategories @relation(fields: [fk_category_id], references: [pk_id], onDelete: NoAction, onUpdate: NoAction)
   users             users             @relation(fields: [fk_user_id], references: [pk_id], onDelete: NoAction, onUpdate: NoAction)
 }
 

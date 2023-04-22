@@ -28,21 +28,21 @@ export default async function handler(
   `) as UsersAndGroups[]
   
   
-  const usersGroupsMap:any = {}
+  const usersGroupsMap:Record<string,any> = {}
 
     usersGroups.filter((g)=>g.fk_user_id ===userId ).forEach((d)=>{
     const groupKey  =d.fk_group_id;
     usersGroupsMap[groupKey]={
       groupName:d.group_name,
       groupId:d.fk_group_id,
-      users:usersGroups.filter((d)=>d.fk_group_id ===groupKey).map((d)=>d.user_name)
+      users:usersGroups.filter((d)=>d.fk_group_id ===groupKey).map((d)=>{
+        return {
+          id:d.fk_user_id,
+          name:d.user_name
+        }
+      })
     }
   })
-
-
-
-  
-
 
 
   // return user to the client
