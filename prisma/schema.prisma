@@ -21,6 +21,7 @@ model usergroups {
   fk_user_id   Int       @default(autoincrement())
   fk_group_id  Int       @default(autoincrement())
   date_created DateTime? @default(now()) @db.Timestamp(6)
+  role         Int?
   groups       groups    @relation(fields: [fk_group_id], references: [pk_id], onDelete: NoAction, onUpdate: NoAction)
   users        users     @relation(fields: [fk_user_id], references: [pk_id], onDelete: NoAction, onUpdate: NoAction)
 }
@@ -41,7 +42,7 @@ model users {
   user_name    String         @db.VarChar(255)
   email        String         @db.VarChar(255)
   date_created DateTime?      @default(now()) @db.Timestamp(6)
-  role         Int
+  is_admin     Int
   usergroups   usergroups[]
   userproducts userproducts[]
 }
