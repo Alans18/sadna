@@ -19,12 +19,25 @@ export default async function handler(
 
   const userQuery = userId !== null ? `and fk_user_id ='${userId}'` : ''
   const filteredByCategories = await prisma.$queryRawUnsafe(`
-  select cast(sum(up.amount) as int)   ,pc.category_name
-  from userproducts up join productcategories pc on up.fk_category_id = pc.pk_id
+  select cast(sum(amount) as int)  ,category_name
+  from userproducts 
   where fk_group_id='${groupId}'
   ${userQuery}
-  group by pc.category_name
+  group by category_name
   `) as UsersAndGroups[]
+
+
+  // for date filter
+
+  // const userQueryForDates = userId !== null ? `and fk_user_id ='${userId}'` : ''
+  // const filteredByCategoriesAndDate = await prisma.$queryRawUnsafe(`
+  // select cast(sum(amount) as int)  ,category_name, date_created
+  // from userproducts 
+  // where fk_group_id='${groupId}'
+  // ${userQuery}
+  // group by category_name
+  // `) as UsersAndGroups[]
+
 
   const categoryAndAmountDic:any[] = [["category","amount"]]
 

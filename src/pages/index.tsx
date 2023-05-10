@@ -5,6 +5,7 @@ import { User } from '@/types/user'
 import { useRouter } from 'next/router'
 import dynamic from 'next/dynamic';
 import PieChart from '@/components/pie-chart'
+import { Box, Button, Center, ChakraProvider, Flex, Grid, HStack, Heading, Select, Spacer, Tabs } from '@chakra-ui/react'
 
 
 
@@ -89,29 +90,82 @@ const  Home = function(props:any) {
     return <div>Loading..</div>
   }
 
-
   return (
-    <>
-      <main className={inter.className}>
-          <div className='home-page--header'>
-        <h1>Hello   <span>{user?.user_name || ""} </span> </h1>
-           <button onClick={onLogout}>logout</button>
-        </div>
+    <ChakraProvider>
+      <>
+        <main className={inter.className}>
+          <Flex padding="10px">
+            <div className='home-page--header'>
+              <Heading 
+                as="h1" 
+                fontWeight="300"
+                fontSize={24}
+                letterSpacing={-0.5}
+              >
+                Hello   <span>{user?.user_name || ""} </span> 
+              </Heading>
+              <Spacer />
 
-        {/*Show Groups  */}
-         <select defaultValue={groups[selectedGroup]?.groupName} onChange={onGroupSelect}>
-         {Object.values(groups)?.map((gr)=><option key={gr.groupId} value={gr.groupId}>{gr.groupName}</option>)}
-        </select> 
+              <Button colorScheme='red' height={8} onClick={onLogout}>logout</Button>
+            </div>
+          </Flex>
 
-        {/* Show Users */}
-        <select value={selectedUser} defaultValue={selectedUser} onChange={onUserSelect}>
-          <option value="all">All</option>
-        {groups[selectedGroup]?.users?.map((user)=><option key={user.id} value={user.id}>{user.name}</option>)}
-        </select>
-      {dataByCategories?.length > 0 ?   <PieChart data={dataByCategories} options={{title:"Categories"}}/> : null}
-      </main>
-    </>
+          <Flex padding="10px" alignItems={"center"}>
+            <HStack spacing={5}>
+              <Box w="150px">
+                {/*Show Groups  */}
+                <Select size="sm" defaultValue={groups[selectedGroup]?.groupName} onChange={onGroupSelect}>
+                {Object.values(groups)?.map((gr)=><option key={gr.groupId} value={gr.groupId}>{gr.groupName}</option>)}
+                </Select>
+              </Box>
+
+              <Box w="150px">
+                {/* Show Users */}
+                <Select size="sm" value={selectedUser} defaultValue={selectedUser} onChange={onUserSelect}>
+                <option value="all">All</option>
+                {groups[selectedGroup]?.users?.map((user)=><option key={user.id} value={user.id}>{user.name}</option>)}
+                </Select>
+              </Box>
+            </HStack>
+            <Spacer />
+
+            <HStack spacing="5px">
+              <Button colorScheme='telegram' size="sm" variant={"ghost"}>Last 7 days</Button>
+              <Button colorScheme='telegram' size="sm" variant={"ghost"}>Last 30 days</Button>
+              <Button colorScheme='telegram' size="sm" variant={"ghost"}>All Time</Button>
+            </HStack>
+          </Flex>
+
+          {dataByCategories?.length > 0 ? <PieChart data={dataByCategories} options={{title:"Categories"}}/> : null}
+        </main>
+      </>
+    </ChakraProvider>
   )
+
+  // return (
+  //   <ChakraProvider>
+  //     <>
+  //       <main className={inter.className}>
+  //           <div className='home-page--header'>
+  //         <h1>Hello   <span>{user?.user_name || ""} </span> </h1>
+  //           <button onClick={onLogout}>logout</button>
+  //         </div>
+
+  //         {/*Show Groups  */}
+  //         <select defaultValue={groups[selectedGroup]?.groupName} onChange={onGroupSelect}>
+  //         {Object.values(groups)?.map((gr)=><option key={gr.groupId} value={gr.groupId}>{gr.groupName}</option>)}
+  //         </select> 
+
+  //         {/* Show Users */}
+  //         <select value={selectedUser} defaultValue={selectedUser} onChange={onUserSelect}>
+  //           <option value="all">All</option>
+  //         {groups[selectedGroup]?.users?.map((user)=><option key={user.id} value={user.id}>{user.name}</option>)}
+  //         </select>
+  //       {dataByCategories?.length > 0 ?   <PieChart data={dataByCategories} options={{title:"Categories"}}/> : null}
+  //       </main>
+  //     </>
+  //   </ChakraProvider>
+  // )
 }
 
 export default dynamic(() => Promise.resolve(Home), { 
