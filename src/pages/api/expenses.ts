@@ -3,9 +3,10 @@ import type { NextApiRequest, NextApiResponse } from 'next'
 
 type UsersAndGroups = {
   sum: number,
- category_name: string,
+  category_name: string,
   date_created:string,
 }
+
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
@@ -15,7 +16,6 @@ export default async function handler(
   if(!groupId){
     return res.status(400).json({message:"Invalid group id"})
   }
-
 
   const userQuery = userId !== null ? `and fk_user_id ='${userId}'` : ''
   const filteredByCategories = await prisma.$queryRawUnsafe(`
@@ -46,5 +46,7 @@ export default async function handler(
     const category = d.category_name
     categoryAndAmountDic.push([category,amount])
   })
+
 res.status(200).json({categoryAndAmountDic})
+
 }
