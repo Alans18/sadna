@@ -5,7 +5,8 @@ import { User } from '@/types/user'
 import { useRouter } from 'next/router'
 import dynamic from 'next/dynamic';
 import PieChart from '@/components/pie-chart'
-import { Box, Button, ChakraProvider, Flex, FormControl, FormLabel, HStack, Heading, Input, Select, Spacer, Text, VStack } from '@chakra-ui/react'
+import { Box, Button, ChakraProvider, Flex, FormControl, HStack, Heading, Icon, Input, Select, Spacer, Text, VStack } from '@chakra-ui/react'
+import { CalendarIcon } from '@chakra-ui/icons'
 
 
 
@@ -130,6 +131,7 @@ const  Home = function(props:any) {
             <Spacer />
 
             <HStack spacing="5px">
+              <CalendarIcon />
               <Text colorScheme='telegram' fontSize="sm">Date Filters: </Text>
               <Button colorScheme='telegram' size="sm" variant={"ghost"}>Last 7 days</Button>
               <Button colorScheme='telegram' size="sm" variant={"ghost"}>Last 30 days</Button>
