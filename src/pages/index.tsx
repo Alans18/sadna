@@ -5,7 +5,7 @@ import { User } from '@/types/user'
 import { useRouter } from 'next/router'
 import dynamic from 'next/dynamic';
 import PieChart from '@/components/pie-chart'
-import { Box, Button, Center, ChakraProvider, Flex, Grid, HStack, Heading, Select, Spacer, Tabs } from '@chakra-ui/react'
+import { Box, Button, ChakraProvider, Flex, FormControl, FormLabel, HStack, Heading, Input, Select, Spacer, Text, VStack } from '@chakra-ui/react'
 
 
 
@@ -130,13 +130,42 @@ const  Home = function(props:any) {
             <Spacer />
 
             <HStack spacing="5px">
+              <Text colorScheme='telegram' fontSize="sm">Date Filters: </Text>
               <Button colorScheme='telegram' size="sm" variant={"ghost"}>Last 7 days</Button>
               <Button colorScheme='telegram' size="sm" variant={"ghost"}>Last 30 days</Button>
+              <Button colorScheme='telegram' size="sm" variant={"ghost"}>Last 6 months</Button>
               <Button colorScheme='telegram' size="sm" variant={"ghost"}>All Time</Button>
             </HStack>
           </Flex>
 
-          {dataByCategories?.length > 0 ? <PieChart data={dataByCategories} options={{title:"Categories"}}/> : null}
+          <Flex alignItems={"center"} padding={10} justifyContent={"space-evenly"}>
+            {/*change top box to bar chart for user expenses*/}
+            <Box>
+              {dataByCategories?.length > 0 ? <PieChart data={dataByCategories} options={{title:"Needs to be changed"}}/> : null}
+            </Box>
+
+            <Box>
+              {dataByCategories?.length > 0 ? <PieChart data={dataByCategories} options={{title:"Categories"}}/> : null}
+            </Box>
+
+            <Box>
+              <VStack alignItems={"left"}>
+                <Text noOfLines={1}>
+                  Total Expenses:
+                </Text>
+                <FormControl>
+                  <Input 
+                      //add ref
+                      type="string"  
+                      bg="white" 
+                      border={"lightblue"}
+                      size="sm" 
+                      borderRadius="6px"
+                  />
+              </FormControl>
+              </VStack>
+            </Box>
+          </Flex>
         </main>
       </>
     </ChakraProvider>
