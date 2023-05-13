@@ -2,7 +2,6 @@ import prisma from '@/lib/prisma'
 import type { NextApiRequest, NextApiResponse } from 'next'
 
 
-
 type UsersAndGroups = {
   pk_id: number,
   user_name: string,
@@ -18,7 +17,7 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  const {userId,groupId} = JSON.parse(req.body)
+  const {userId} = JSON.parse(req.body)
   
   const usersGroups = await prisma.$queryRawUnsafe(`
     select *

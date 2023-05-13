@@ -7,6 +7,8 @@ import dynamic from 'next/dynamic';
 import Chart from '@/components/chart'
 import { Box, Button, ChakraProvider, Flex, FormControl, HStack, Heading, Icon, Input, Select, Spacer, Text, VStack } from '@chakra-ui/react'
 import { CalendarIcon } from '@chakra-ui/icons'
+import Header from '@/components/heading'
+import DateFilters from '@/components/date-filters'
 
 type ServerUsersAndGroups = {
   groupName:string,
@@ -21,6 +23,7 @@ const inter = Inter({ subsets: ['latin'] })
 const  Home = function(props:any) {
 
   const user = getFromStorage('user') as User
+
   const [groups,setGroups] = React.useState<ServerUsersAndGroups[]>([])
   const [selectedGroup,setSelectedGroup] = React.useState<any>(null)
   const [selectedUser,setSelectedUser] = React.useState<any>(null)
@@ -28,6 +31,7 @@ const  Home = function(props:any) {
   const [dataByUserName,setDataByUserName] = React.useState<(string | number)[][]>([])
   const [dateFilter,setDateFilter]= React.useState<string | number>('all')
   const [isAdmin,setIsAdmin]= React.useState(false)
+  const [totalExpeness,setTotalEpensess]= React.useState(0)
   const router=  useRouter()
 
   const onLogout = function(){
@@ -63,15 +67,18 @@ const  Home = function(props:any) {
   setDataByCategories(categoryAndAmountDic)
   }
 
-  const getUserAmount = async function(groupId:string){
+  const getUserAmount = async function(userId:string,groupId:string){
     const res  = await fetch("/api/expenses-per-user",{
       method:"POST",
       body:JSON.stringify({
-        groupId
+        groupId,
+        dateFilter,
+        userId:userId === "all" ? null:userId,
       })
   }) 
-  const userNameAndAmountDic = await res.json()
+  const {userNameAndAmountDic,totalExpenses} = await res.json()
   setDataByUserName(userNameAndAmountDic)
+  setTotalEpensess(totalExpenses)
 }
   
   const onGroupSelect = function(e:React.ChangeEvent<HTMLSelectElement>){
@@ -97,7 +104,7 @@ const  Home = function(props:any) {
   React.useEffect(()=>{
     if(selectedGroup === null) return
      getProducts(selectedUser,selectedGroup)
-    getUserAmount(selectedGroup)
+    getUserAmount(selectedUser,selectedGroup)
   },[selectedGroup,selectedUser,dateFilter])
 
   if(!user){
@@ -107,20 +114,9 @@ const  Home = function(props:any) {
   return (
     <ChakraProvider>
         <main className={inter.className}>
-          <Flex padding="10px">
-            <div className='home-page--header'>
-              <Heading 
-                as="h1" 
-                fontWeight="300"
-                fontSize={24}
-                letterSpacing={-0.5}
-              >
-                Hello   <span>{user?.user_name || ""}  {isAdmin ? " (admin user)" : "" } </span> 
-              </Heading>
-              <Spacer />
-              <Button  colorScheme='red' height={8} margin={'1rem'} onClick={onLogout}>logout</Button>
-            </div>
-          </Flex>
+          <Box  padding="10px">
+          <Header isAdmin={isAdmin}  onLogout={onLogout} user={user}  />
+          </Box>
 
           <Flex padding="10px" alignItems={"center"}>
             <HStack spacing={5}>
@@ -144,10 +140,7 @@ const  Home = function(props:any) {
             <HStack spacing="5px">
               <CalendarIcon />
               <Text colorScheme='telegram' fontSize="sm">Date Filters: </Text>
-              <Button onClick={()=>setDateFilter(7)} colorScheme='telegram' size="sm" variant={"ghost"}>Last 7 days</Button>
-              <Button onClick={()=>setDateFilter(30)} colorScheme='telegram' size="sm" variant={"ghost"}>Last 30 days</Button>
-              <Button onClick={()=>{setDateFilter(180)}} colorScheme='telegram' size="sm" variant={"ghost"}>Last 6 months</Button>
-              <Button onClick={()=>{setDateFilter('all')}} colorScheme='telegram' size="sm" variant={"ghost"}>All Time</Button>
+              <DateFilters onChange={(date)=>setDateFilter(date)}/>
             </HStack>
           </Flex>
 
@@ -164,7 +157,7 @@ const  Home = function(props:any) {
             <Box>
               <VStack alignItems={"left"}>
                 <Text noOfLines={1}>
-                  Total Expenses:
+                  Total Expenses: {totalExpeness}
                 </Text>
                 <FormControl>
                   <Input 
@@ -183,30 +176,7 @@ const  Home = function(props:any) {
     </ChakraProvider>
   )
 
-  // return (
-  //   <ChakraProvider>
-  //     <>
-  //       <main className={inter.className}>
-  //           <div className='home-page--header'>
-  //         <h1>Hello   <span>{user?.user_name || ""} </span> </h1>
-  //           <button onClick={onLogout}>logout</button>
-  //         </div>
 
-  //         {/*Show Groups  */}
-  //         <select defaultValue={groups[selectedGroup]?.groupName} onChange={onGroupSelect}>
-  //         {Object.values(groups)?.map((gr)=><option key={gr.groupId} value={gr.groupId}>{gr.groupName}</option>)}
-  //         </select> 
-
-  //         {/* Show Users */}
-  //         <select value={selectedUser} defaultValue={selectedUser} onChange={onUserSelect}>
-  //           <option value="all">All</option>
-  //         {groups[selectedGroup]?.users?.map((user)=><option key={user.id} value={user.id}>{user.name}</option>)}
-  //         </select>
-  //       {dataByCategories?.length > 0 ?   <PieChart data={dataByCategories} options={{title:"Categories"}}/> : null}
-  //       </main>
-  //     </>
-  //   </ChakraProvider>
-  // )
 }
 
 export default dynamic(() => Promise.resolve(Home), { 
