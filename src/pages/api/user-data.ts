@@ -27,10 +27,17 @@ export default async function handler(
     join groups g on g.pk_id = ug.fk_group_id
   `) as UsersAndGroups[]
   
-  
+  // is user admin? 
+  const isUserAdmin = (await prisma.users.findFirst({
+    where:{
+      pk_id:userId
+    }
+  }))?.is_admin
+
   const usersGroupsMap:Record<string,any> = {}
 
-    usersGroups.filter((g)=>g.fk_user_id ===userId ).forEach((d)=>{
+    usersGroups.filter((g)=>isUserAdmin ? true :  g.fk_user_id ===userId ).forEach((d)=>{
+  
     const groupKey  =d.fk_group_id;
     usersGroupsMap[groupKey]={
       groupName:d.group_name,
@@ -46,5 +53,5 @@ export default async function handler(
 
 
   // return user to the client
-  return res.status(200).json({usersGroupsMap})
+  return res.status(200).json({usersGroupsMap,isUserAdmin})
 }

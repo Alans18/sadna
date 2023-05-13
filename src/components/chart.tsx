@@ -1,4 +1,4 @@
-import { Chart } from "react-google-charts";
+import { Chart, GoogleChartWrapperChartType } from "react-google-charts";
 
 export const data = [
   ["Task", "Hours per Day"],
@@ -14,6 +14,7 @@ export const options = {
 };
 
 type PieChartProps = {
+  type:GoogleChartWrapperChartType | undefined
   options:{
     title:string
   },
@@ -21,9 +22,8 @@ type PieChartProps = {
 }
 
 const PieChart = function(props:PieChartProps) {
-  
   return  <Chart
-  chartType="PieChart"
+  chartType={props.type}
   data={props.data}
   options={props.options}
   width={"100%"}

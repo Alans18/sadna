@@ -4,11 +4,9 @@ import React from 'react'
 import { User } from '@/types/user'
 import { useRouter } from 'next/router'
 import dynamic from 'next/dynamic';
-import PieChart from '@/components/pie-chart'
+import Chart from '@/components/chart'
 import { Box, Button, ChakraProvider, Flex, FormControl, HStack, Heading, Icon, Input, Select, Spacer, Text, VStack } from '@chakra-ui/react'
 import { CalendarIcon } from '@chakra-ui/icons'
-
-
 
 type ServerUsersAndGroups = {
   groupName:string,
@@ -16,9 +14,8 @@ type ServerUsersAndGroups = {
   users:{id:number,name:string}[]
 }
 
-type ProductsResponse = {
-  categoryAndAmountDic:any
-}
+
+
 const inter = Inter({ subsets: ['latin'] })
 
 const  Home = function(props:any) {
@@ -28,12 +25,16 @@ const  Home = function(props:any) {
   const [selectedGroup,setSelectedGroup] = React.useState<any>(null)
   const [selectedUser,setSelectedUser] = React.useState<any>(null)
   const [dataByCategories,setDataByCategories] = React.useState<(string | number)[][]>([])
+  const [dataByUserName,setDataByUserName] = React.useState<(string | number)[][]>([])
+  const [dateFilter,setDateFilter]= React.useState<string | number>('all')
+  const [isAdmin,setIsAdmin]= React.useState(false)
   const router=  useRouter()
 
   const onLogout = function(){
     router.push("/login")
     clearFromSession('user')
   }
+
   const getUserGroups = async function(){
     // Get data from server
     const res  = await fetch("/api/user-data",{
@@ -42,27 +43,37 @@ const  Home = function(props:any) {
         userId:user.pk_id,
       })
   })  
-  const data = await res.json()
-  setGroups(data.usersGroupsMap)
-  setSelectedGroup(Object.keys(data.usersGroupsMap)[0])
+  const {usersGroupsMap,isUserAdmin} = await res.json()
+  setGroups(usersGroupsMap)
+  setSelectedGroup(Object.keys(usersGroupsMap)[0])
+  setIsAdmin(isUserAdmin)
   setSelectedUser("all")
   }
 
-
   const getProducts = async function(userId:string,groupId:string){
-    const res  = await fetch("/api/expenses",{
+    const res  = await fetch("/api/expenses-per-category",{
       method:"POST",
       body:JSON.stringify({
         userId:userId === "all" ? null:userId,
+        groupId,
+        dateFilter
+      })
+  }) 
+  const categoryAndAmountDic= await res.json()
+  setDataByCategories(categoryAndAmountDic)
+  }
+
+  const getUserAmount = async function(groupId:string){
+    const res  = await fetch("/api/expenses-per-user",{
+      method:"POST",
+      body:JSON.stringify({
         groupId
       })
   }) 
+  const userNameAndAmountDic = await res.json()
+  setDataByUserName(userNameAndAmountDic)
+}
   
-  const data = await res.json() as ProductsResponse
-  const {categoryAndAmountDic} = data
-  setDataByCategories(categoryAndAmountDic)
-  
-  }
   const onGroupSelect = function(e:React.ChangeEvent<HTMLSelectElement>){
     const groupId = e.target.value;
    setSelectedGroup(groupId)
@@ -80,12 +91,14 @@ const  Home = function(props:any) {
       return
     }
     getUserGroups()
+
   },[])
 
   React.useEffect(()=>{
     if(selectedGroup === null) return
-    getProducts(selectedUser,selectedGroup)
-  },[selectedGroup,selectedUser])
+     getProducts(selectedUser,selectedGroup)
+    getUserAmount(selectedGroup)
+  },[selectedGroup,selectedUser,dateFilter])
 
   if(!user){
     return <div>Loading..</div>
@@ -93,7 +106,6 @@ const  Home = function(props:any) {
 
   return (
     <ChakraProvider>
-      <>
         <main className={inter.className}>
           <Flex padding="10px">
             <div className='home-page--header'>
@@ -103,11 +115,10 @@ const  Home = function(props:any) {
                 fontSize={24}
                 letterSpacing={-0.5}
               >
-                Hello   <span>{user?.user_name || ""} </span> 
+                Hello   <span>{user?.user_name || ""}  {isAdmin ? " (admin user)" : "" } </span> 
               </Heading>
               <Spacer />
-
-              <Button colorScheme='red' height={8} onClick={onLogout}>logout</Button>
+              <Button  colorScheme='red' height={8} margin={'1rem'} onClick={onLogout}>logout</Button>
             </div>
           </Flex>
 
@@ -133,21 +144,21 @@ const  Home = function(props:any) {
             <HStack spacing="5px">
               <CalendarIcon />
               <Text colorScheme='telegram' fontSize="sm">Date Filters: </Text>
-              <Button colorScheme='telegram' size="sm" variant={"ghost"}>Last 7 days</Button>
-              <Button colorScheme='telegram' size="sm" variant={"ghost"}>Last 30 days</Button>
-              <Button colorScheme='telegram' size="sm" variant={"ghost"}>Last 6 months</Button>
-              <Button colorScheme='telegram' size="sm" variant={"ghost"}>All Time</Button>
+              <Button onClick={()=>setDateFilter(7)} colorScheme='telegram' size="sm" variant={"ghost"}>Last 7 days</Button>
+              <Button onClick={()=>setDateFilter(30)} colorScheme='telegram' size="sm" variant={"ghost"}>Last 30 days</Button>
+              <Button onClick={()=>{setDateFilter(180)}} colorScheme='telegram' size="sm" variant={"ghost"}>Last 6 months</Button>
+              <Button onClick={()=>{setDateFilter('all')}} colorScheme='telegram' size="sm" variant={"ghost"}>All Time</Button>
             </HStack>
           </Flex>
 
           <Flex alignItems={"center"} padding={10} justifyContent={"space-evenly"}>
             {/*change top box to bar chart for user expenses*/}
             <Box>
-              {dataByCategories?.length > 0 ? <PieChart data={dataByCategories} options={{title:"Needs to be changed"}}/> : null}
+              {dataByUserName?.length > 0 ? <Chart type='Bar' data={dataByUserName} options={{title:"Users"}}/> : null}
             </Box>
 
             <Box>
-              {dataByCategories?.length > 0 ? <PieChart data={dataByCategories} options={{title:"Categories"}}/> : null}
+              {dataByCategories?.length > 0 ? <Chart type='PieChart' data={dataByCategories} options={{title:"Categories"}}/> : null}
             </Box>
 
             <Box>
@@ -169,7 +180,6 @@ const  Home = function(props:any) {
             </Box>
           </Flex>
         </main>
-      </>
     </ChakraProvider>
   )
 

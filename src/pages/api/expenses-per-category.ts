@@ -11,33 +11,22 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  const {userId,groupId} = JSON.parse(req.body)
+  const {userId,groupId,dateFilter} = JSON.parse(req.body)
  
   if(!groupId){
     return res.status(400).json({message:"Invalid group id"})
   }
 
   const userQuery = userId !== null ? `and fk_user_id ='${userId}'` : ''
+  const dateQuery = dateFilter !== 'all'? `and date_created > CURRENT_DATE -${dateFilter}` :'' 
   const filteredByCategories = await prisma.$queryRawUnsafe(`
   select cast(sum(amount) as int)  ,category_name
   from userproducts 
   where fk_group_id='${groupId}'
   ${userQuery}
+  ${dateQuery}
   group by category_name
   `) as UsersAndGroups[]
-
-
-  // for date filter
-
-  // const userQueryForDates = userId !== null ? `and fk_user_id ='${userId}'` : ''
-  // const filteredByCategoriesAndDate = await prisma.$queryRawUnsafe(`
-  // select cast(sum(amount) as int)  ,category_name, date_created
-  // from userproducts 
-  // where fk_group_id='${groupId}'
-  // ${userQuery}
-  // group by category_name
-  // `) as UsersAndGroups[]
-
 
   const categoryAndAmountDic:any[] = [["category","amount"]]
 
@@ -47,6 +36,6 @@ export default async function handler(
     categoryAndAmountDic.push([category,amount])
   })
 
-res.status(200).json({categoryAndAmountDic})
+res.status(200).json(categoryAndAmountDic)
 
 }
