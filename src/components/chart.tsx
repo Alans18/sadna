@@ -1,30 +1,31 @@
+import { Box, Spinner } from "@chakra-ui/react";
 import { Chart, GoogleChartWrapperChartType } from "react-google-charts";
 
-export const data = [
-  ["Task", "Hours per Day"],
-  ["Work", 11],
-  ["Eat", 2],
-  ["Commute", 2],
-  ["Watch TV", 2],
-  ["Sleep", 7],
-];
-
-export const options = {
-  title: "My Daily Activities",
-};
 
 type PieChartProps = {
   type:GoogleChartWrapperChartType | undefined
   options:{
     title:string
   },
-  data:(string | number)[][]
+  data?:(string | number)[][] 
+}
+
+const Loader = function(){
+  return <span>Loading...</span>
 }
 
 const PieChart = function(props:PieChartProps) {
+
+  if(!props.data){
+    return <Box width={"100%"} height={"400px"}>
+      <Spinner/>
+    </Box>
+  }
+
   return  <Chart
   chartType={props.type}
   data={props.data}
+  loader={<Loader/>}
   options={props.options}
   width={"100%"}
   height={"400px"}

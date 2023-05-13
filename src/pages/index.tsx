@@ -27,8 +27,8 @@ const  Home = function(props:any) {
   const [groups,setGroups] = React.useState<ServerUsersAndGroups[]>([])
   const [selectedGroup,setSelectedGroup] = React.useState<any>(null)
   const [selectedUser,setSelectedUser] = React.useState<any>(null)
-  const [dataByCategories,setDataByCategories] = React.useState<(string | number)[][]>([])
-  const [dataByUserName,setDataByUserName] = React.useState<(string | number)[][]>([])
+  const [dataByCategories,setDataByCategories] = React.useState<(string | number)[][]>()
+  const [dataByUserName,setDataByUserName] = React.useState<(string | number)[][]>()
   const [dateFilter,setDateFilter]= React.useState<string | number>('all')
   const [isAdmin,setIsAdmin]= React.useState(false)
   const [totalExpeness,setTotalEpensess]= React.useState(0)
@@ -147,29 +147,17 @@ const  Home = function(props:any) {
           <Flex alignItems={"center"} padding={10} justifyContent={"space-evenly"}>
             {/*change top box to bar chart for user expenses*/}
             <Box>
-              {dataByUserName?.length > 0 ? <Chart type='Bar' data={dataByUserName} options={{title:"Users"}}/> : null}
+             <Chart type='Bar' data={dataByUserName} options={{title:"Users"}}/> 
             </Box>
 
             <Box>
-              {dataByCategories?.length > 0 ? <Chart type='PieChart' data={dataByCategories} options={{title:"Categories"}}/> : null}
+               <Chart type='PieChart' data={dataByCategories} options={{title:"Categories"}}/> 
             </Box>
 
             <Box>
-              <VStack alignItems={"left"}>
-                <Text noOfLines={1}>
+                <Text>
                   Total Expenses: {totalExpeness}
                 </Text>
-                <FormControl>
-                  <Input 
-                      //add ref
-                      type="string"  
-                      bg="white" 
-                      border={"lightblue"}
-                      size="sm" 
-                      borderRadius="6px"
-                  />
-              </FormControl>
-              </VStack>
             </Box>
           </Flex>
         </main>
