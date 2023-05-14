@@ -17,7 +17,7 @@ const Loader = function(){
 const PieChart = function(props:PieChartProps) {
 
   if(!props.data){
-    return <Box width={"100%"} height={"400px"}>
+    return <Box  height={"400px"}>
       <Spinner/>
     </Box>
   }

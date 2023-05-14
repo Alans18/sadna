@@ -30,7 +30,7 @@ const Login = function(){
                 setSessionStorage("user",data)
                 router.push("/")
             } catch (error:any) {
-            // show watrinng in tthe client
+            // show warning in the client
              setError(error)
             }
 
@@ -64,6 +64,7 @@ const Login = function(){
                                     <FormControl>
                                         <FormLabel size="sm">Enter email address</FormLabel>
                                         <Input 
+                                        variant={"outline"}
                                             ref={emailRef} 
                                             id="email" 
                                             type="email"  
@@ -91,7 +92,7 @@ const Login = function(){
                                     </FormControl>
                                     <Button 
                                         type= "submit"
-                                        colorScheme="blue"
+                                        colorScheme="telegram"
                                         size="sm" 
                                         _hover={{bg: "#003FBC"}} 
                                         _active={{bg: "darkblue"}}
@@ -105,34 +106,16 @@ const Login = function(){
                         </CardBody>
                     </Card>
                 </Center>
-
                 <Card>
                     <CardBody>
                         <Center>
-                            <Text fontSize="sm">© Sadna Project</Text>
+                            <Text fontSize="sm">© Sadna Project 2023</Text>
                         </Center>
                     </CardBody>
                 </Card>
             </Stack>
         </Box>
     )
-
-    // return <>
-    //  <h2>Login Page</h2>
-    //   <form onSubmit={onFormSubmit}>
-    //     <label htmlFor="email">Email</label>
-    //     <input ref={emailRef} id="email" type="email"  defaultValue="Noam@test.com" required />
-    //     <br />
-    //     <label htmlFor="email">Authentication Key</label>
-    //     <input ref={authKeyRef} id="auth" type="string" defaultValue="GVF54" required />
-    //     <br />
-    //     <input type="submit"  value="Login"/>
-    //  {/* Errors */}
-    // <p style={{color:"red"}}>  {error}</p>
-    // </form>
-
-
-    // </>
 }
 
 

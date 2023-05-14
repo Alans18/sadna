@@ -112,7 +112,7 @@ const  Home = function(props:any) {
   }
 
   return (
-    <ChakraProvider>
+   
         <main className={inter.className}>
           <Box  padding="10px">
           <Header isAdmin={isAdmin}  onLogout={onLogout} user={user}  />
@@ -146,22 +146,18 @@ const  Home = function(props:any) {
 
           <Flex alignItems={"center"} padding={10} justifyContent={"space-evenly"}>
             {/*change top box to bar chart for user expenses*/}
-            <Box>
-             <Chart type='Bar' data={dataByUserName} options={{title:"Users"}}/> 
-            </Box>
-
-            <Box>
-               <Chart type='PieChart' data={dataByCategories} options={{title:"Categories"}}/> 
-            </Box>
-
-            <Box>
-                <Text>
+           <Box>
+           <Chart type='Bar' data={dataByUserName} options={{title:"Users"}}/> 
+           </Box>
+        <Box>
+        <Chart type='PieChart' data={dataByCategories} options={{title:"Categories"}}/> 
+        </Box>
+          </Flex>
+          <Text textAlign={"center"}>
                   Total Expenses: {totalExpeness}
                 </Text>
-            </Box>
-          </Flex>
         </main>
-    </ChakraProvider>
+
   )
 
 
