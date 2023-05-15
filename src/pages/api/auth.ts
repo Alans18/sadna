@@ -19,26 +19,28 @@ export default async function handler(
     email:(email as string).toLowerCase()
     }
   })
+  console.log(user)
 
   if(!user){
     return  res.status(404).json({message:"Invalid credetinals"});
   }
 
-  const userGroups = await prisma.usergroups.findFirst({
+  const userGroups = await prisma.usergroups.findMany({
     where:{
       fk_user_id:user?.pk_id
     }
   })
 
-  
-  const allAuthKeys =(await prisma.groups.findMany({
-    where:{
-      pk_id:{
-        in:userGroups?.fk_group_id
-      }
-    }
-  })).map((a)=>a.auth)
+  const userGroupIds = userGroups.map((group) => group.fk_group_id);
+  const allAuthKeys = (await prisma.groups.findMany({
+    where: {
+      pk_id: {
+        in: userGroupIds,
+      },
+    },
+  })).map((a) => a.auth);
 
+  console.log(allAuthKeys)
 
   if(!allAuthKeys.includes(authKey)){
   return  res.status(404).json({message:"Invalid credetinals"}); 
