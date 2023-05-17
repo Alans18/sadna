@@ -43,6 +43,7 @@ model users {
   email        String         @db.VarChar(255)
   date_created DateTime?      @default(now()) @db.Timestamp(6)
   is_admin     Int
+  password     String?        @db.VarChar(255)
   usergroups   usergroups[]
   userproducts userproducts[]
 }

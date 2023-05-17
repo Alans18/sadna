@@ -7,7 +7,7 @@ import React  from "react"
 const Login = function(){
 
     const emailRef = React.useRef<any>()
-    const authKeyRef = React.useRef<any>()
+    const passwordKeyRef = React.useRef<any>()
     const [error,setError] = React.useState("")
     const router = useRouter()
 
@@ -19,7 +19,7 @@ const Login = function(){
                     method:"POST",
                     body:JSON.stringify({
                         email:emailRef.current.value,
-                        authKey:authKeyRef.current.value
+                        password:passwordKeyRef.current.value
                     })
                 })
                 const data = await res.json()
@@ -77,11 +77,11 @@ const Login = function(){
                                         />
                                     </FormControl>
                                     <FormControl>
-                                        <FormLabel size="sm">Enter Validation string</FormLabel>
+                                        <FormLabel size="sm">Enter Password</FormLabel>
                                         <Input 
-                                            ref={authKeyRef} 
+                                            ref={passwordKeyRef} 
                                             id="auth" 
-                                            type="string" 
+                                            type="password" 
                                             //defaultValue="24283" 
                                             required
                                             bg="white" 

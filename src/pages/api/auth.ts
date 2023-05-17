@@ -6,7 +6,7 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  const { email,authKey} = JSON.parse(req.body)
+  const { email,password} = JSON.parse(req.body)
 
   if(!email){
     return res.status(404).json({message:"No email provided"});
@@ -17,7 +17,8 @@ export default async function handler(
   // Try to find the user
   const user = await prisma.users.findFirst({
     where:{
-    email:(email as string).toLowerCase()
+    email:(email as string).toLowerCase(),
+    password:(password as string)
     }
   })
   console.log(user)
@@ -26,13 +27,13 @@ export default async function handler(
     return  res.status(404).json({message:"Invalid credetinals"});
   }
 
-  const userGroups = await prisma.usergroups.findMany({
+  /*const userGroups = await prisma.usergroups.findMany({
     where:{
       fk_user_id:user?.pk_id
     }
-  })
+  })*/
 
-  const userGroupIds = userGroups.map((group) => group.fk_group_id);
+  /*const userGroupIds = userGroups.map((group) => group.fk_group_id);
   const allAuthKeys = (await prisma.groups.findMany({
     where: {
       pk_id: {
@@ -41,11 +42,11 @@ export default async function handler(
     },
   })).map((a) => a.auth);
 
-  console.log(allAuthKeys)
+  console.log(allAuthKeys)*/
 
-  if(!allAuthKeys.includes(authKey)){
+  /*if(!allAuthKeys.includes(password)){
   return  res.status(404).json({message:"Invalid credetinals"}); 
-  }
+  }*/
   // no user what do to
 
 
