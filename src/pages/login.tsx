@@ -68,7 +68,7 @@ const Login = function(){
                                             ref={emailRef} 
                                             id="email" 
                                             type="email"  
-                                            defaultValue="Noam@test.com" 
+                                            //defaultValue="Noam@test.com" 
                                             required 
                                             bg="white" 
                                             borderColor='#d8dee4'
@@ -82,7 +82,7 @@ const Login = function(){
                                             ref={authKeyRef} 
                                             id="auth" 
                                             type="string" 
-                                            defaultValue="24283" 
+                                            //defaultValue="24283" 
                                             required
                                             bg="white" 
                                             borderColor='#d8dee4' 
