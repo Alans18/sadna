@@ -12,7 +12,8 @@ export default async function handler(
     return res.status(404).json({message:"No email provided"});
   
   }
-  
+  console.log(email)
+
   // Try to find the user
   const user = await prisma.users.findFirst({
     where:{

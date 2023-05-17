@@ -6,9 +6,9 @@ type DateFilterProps ={
 }
 
 const dateMap = {
-    'Last 7 days':7,
-    'Last 30 days':30,
-    'Last 6 month':180,
+    'Last 7 days':1,
+    'Last 30 days':2,
+    'Last 6 month':7,
     'All Time':'all'
 }
 
