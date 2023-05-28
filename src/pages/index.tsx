@@ -29,6 +29,7 @@ const  Home = function(props:any) {
   const [selectedUser,setSelectedUser] = React.useState<any>(null)
   const [dataByCategories,setDataByCategories] = React.useState<(string | number)[][]>()
   const [dataByUserName,setDataByUserName] = React.useState<(string | number)[][]>()
+  const [monthlyExpense, setMontlyExpense] = React.useState<(number | number)[][]>()
   const [dateFilter,setDateFilter]= React.useState<string | number>('all')
   const [isAdmin,setIsAdmin]= React.useState(false)
   const [totalExpeness,setTotalEpensess]= React.useState(0)
@@ -79,7 +80,19 @@ const  Home = function(props:any) {
   const {userNameAndAmountDic,totalExpenses} = await res.json()
   setDataByUserName(userNameAndAmountDic)
   setTotalEpensess(totalExpenses)
-}
+  }
+
+  const getMontlyExpense = async function(userId:string,groupId:string){
+    const res  = await fetch("/api/expenses-per-month",{
+      method:"POST",
+      body:JSON.stringify({
+        groupId,
+        userId:userId === "all" ? null:userId,
+      })
+  }) 
+  const {monthAndAmount} = await res.json()
+  setMontlyExpense(monthAndAmount)
+  }
   
   const onGroupSelect = function(e:React.ChangeEvent<HTMLSelectElement>){
     const groupId = e.target.value;
@@ -149,12 +162,15 @@ const  Home = function(props:any) {
 
           <Flex alignItems={"center"} padding={10} justifyContent={"space-evenly"}>
             {/*change top box to bar chart for user expenses*/}
-           <Box>
-           <Chart type='Bar' data={dataByUserName} options={{title:"Users"}}/> 
-           </Box>
-        <Box>
-        <Chart type='PieChart' data={dataByCategories} options={{title:"Categories"}}/> 
-        </Box>
+              <Box>
+              <Chart type='Bar' data={dataByUserName} options={{title:"Users"}}/> 
+              </Box>
+              <Box>
+              <Chart type='PieChart' data={dataByCategories} options={{title:"Categories"}}/> 
+              </Box>
+              <Box>
+              <Chart type='BarChart' data={monthlyExpense} options={{title:"monthly expense"}}/> 
+              </Box>
           </Flex>
           <Text textAlign={"center"}>
                   Total Expenses: {totalExpeness}
