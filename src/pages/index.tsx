@@ -114,9 +114,12 @@ const  Home = function(props:any) {
   return (
    
         <main className={inter.className}>
-          <Box  padding="10px">
-          <Header isAdmin={isAdmin}  onLogout={onLogout} user={user}  />
-          </Box>
+          <HStack>
+            <img src="/iconBlueNew.png" alt="Icon" width={100} />
+            <Box  padding="10px">
+              <Header isAdmin={isAdmin} user={user} onLogout={onLogout} />
+            </Box>
+          </HStack>
 
           <Flex padding="10px" alignItems={"center"}>
             <HStack spacing={5}>

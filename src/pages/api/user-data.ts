@@ -5,7 +5,7 @@ import type { NextApiRequest, NextApiResponse } from 'next'
 type UsersAndGroups = {
   pk_id: number,
   user_name: string,
-  email: string,
+  login_name: string,
   date_created:string,
   role: number,
   fk_user_id: number,

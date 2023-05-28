@@ -6,7 +6,7 @@ import React  from "react"
 
 const Login = function(){
 
-    const emailRef = React.useRef<any>()
+    const loginRef = React.useRef<any>()
     const passwordKeyRef = React.useRef<any>()
     const [error,setError] = React.useState("")
     const router = useRouter()
@@ -18,7 +18,7 @@ const Login = function(){
                 const res  =   await fetch("/api/auth",{
                     method:"POST",
                     body:JSON.stringify({
-                        email:emailRef.current.value,
+                        login_name:loginRef.current.value,
                         password:passwordKeyRef.current.value
                     })
                 })
@@ -38,8 +38,7 @@ const Login = function(){
 
     return(
         <Box>
-            <VStack as="header" spacing="6" m="8">
-                {/* add logo for money mate */}
+            <VStack as="header" spacing="2" m="8" marginBottom={2}>
                 <Heading 
                     as="h1" 
                     fontWeight="300"
@@ -48,6 +47,7 @@ const Login = function(){
                 >
                     Sign in to MoneyMate
                 </Heading>
+                <img src="/iconBlueNew.png" alt="Icon" width={100}/>
             </VStack>
             <Stack spacing="4">
                 <Center>
@@ -62,12 +62,12 @@ const Login = function(){
                             <form onSubmit={onFormSubmit}>
                                 <Stack spacing="4">
                                     <FormControl>
-                                        <FormLabel size="sm">Enter email address</FormLabel>
+                                        <FormLabel size="sm">Enter user name</FormLabel>
                                         <Input 
                                         variant={"outline"}
-                                            ref={emailRef} 
-                                            id="email" 
-                                            type="email"  
+                                            ref={loginRef} 
+                                            id="userName" 
+                                            type="text"  
                                             //defaultValue="Noam@test.com" 
                                             required 
                                             bg="white" 

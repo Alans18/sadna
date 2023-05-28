@@ -6,18 +6,18 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  const { email,password} = JSON.parse(req.body)
+  const { login_name,password} = JSON.parse(req.body)
 
-  if(!email){
-    return res.status(404).json({message:"No email provided"});
+  if(!login_name){
+    return res.status(404).json({message:"No login name provided"});
   
   }
-  console.log(email)
+  console.log(login_name)
 
   // Try to find the user
   const user = await prisma.users.findFirst({
     where:{
-    email:(email as string).toLowerCase(),
+    login_name:(login_name as string).toLowerCase(),
     password:(password as string)
     }
   })

@@ -1,6 +1,6 @@
 export type User ={
     date_created:string;
-    email:string;
+    login_name:string;
     is_admin: 0 | 1;
     pk_id:number;
     user_name:string

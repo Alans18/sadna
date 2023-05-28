@@ -1,4 +1,4 @@
-import { Box, Spinner } from "@chakra-ui/react";
+import { Alert, AlertDescription, AlertIcon, Box, Spinner } from "@chakra-ui/react";
 import { Chart, GoogleChartWrapperChartType } from "react-google-charts";
 
 
@@ -20,6 +20,17 @@ const PieChart = function(props:PieChartProps) {
     return <Box  height={"400px"}>
       <Spinner/>
     </Box>
+  }
+
+  console.log(props.data)
+  if(!props.data[1]){
+    return <Alert status="warning">
+        <AlertIcon/>
+        <AlertDescription maxWidth={300}>
+        No data was recived from DB
+        Please make sure you are connecet to the right group/user          
+        </AlertDescription>
+      </Alert>
   }
 
   return  <Chart
