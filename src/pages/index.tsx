@@ -29,7 +29,7 @@ const  Home = function(props:any) {
   const [selectedUser,setSelectedUser] = React.useState<any>(null)
   const [dataByCategories,setDataByCategories] = React.useState<(string | number)[][]>()
   const [dataByUserName,setDataByUserName] = React.useState<(string | number)[][]>()
-  const [monthlyExpense, setMontlyExpense] = React.useState<(number | number)[][]>()
+  const [dataByMonth, setDataByMonth] = React.useState<(number | number)[][]>()
   const [dateFilter,setDateFilter]= React.useState<string | number>('all')
   const [isAdmin,setIsAdmin]= React.useState(false)
   const [totalExpeness,setTotalEpensess]= React.useState(0)
@@ -82,7 +82,7 @@ const  Home = function(props:any) {
   setTotalEpensess(totalExpenses)
   }
 
-  const getMontlyExpense = async function(userId:string,groupId:string){
+  const getDataByMonth = async function(userId:string,groupId:string){
     const res  = await fetch("/api/expenses-per-month",{
       method:"POST",
       body:JSON.stringify({
@@ -91,7 +91,7 @@ const  Home = function(props:any) {
       })
   }) 
   const {monthAndAmount} = await res.json()
-  setMontlyExpense(monthAndAmount)
+  setDataByMonth(monthAndAmount)
   }
   
   const onGroupSelect = function(e:React.ChangeEvent<HTMLSelectElement>){
@@ -116,13 +116,29 @@ const  Home = function(props:any) {
 
   React.useEffect(()=>{
     if(selectedGroup === null) return
-     getProducts(selectedUser,selectedGroup)
-    getUserAmount(selectedUser,selectedGroup)
+      getProducts(selectedUser,selectedGroup)
+      getUserAmount(selectedUser,selectedGroup)
+      getDataByMonth(selectedUser,selectedGroup)
   },[selectedGroup,selectedUser,dateFilter])
 
   if(!user){
     return <div>Loading..</div>
   }
+
+  //if dataByMonth not empty
+  if(dataByMonth){
+    
+    //iterate through the array to sum all the expenses per month 
+    for(let i = 1; i < dataByMonth.length; i++){
+      console.log(dataByMonth);
+      for(let j = 1; j < dataByMonth[i].length; j++){
+        dataByMonth[i][1] += dataByMonth[i][j]; //
+      } 
+    }
+  }
+
+  console.log(dataByMonth);
+
 
   return (
    
@@ -168,10 +184,10 @@ const  Home = function(props:any) {
               <Box>
               <Chart type='PieChart' data={dataByCategories} options={{title:"Categories"}}/> 
               </Box>
-              <Box>
-              <Chart type='BarChart' data={monthlyExpense} options={{title:"monthly expense"}}/> 
-              </Box>
           </Flex>
+              <Box>
+              <Chart type='BarChart' data={dataByMonth} options={{title:"monthly expense"}}/> 
+              </Box>
           <Text textAlign={"center"}>
                   Total Expenses: {totalExpeness}
                 </Text>
