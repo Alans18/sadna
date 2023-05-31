@@ -125,18 +125,6 @@ const  Home = function(props:any) {
     return <div>Loading..</div>
   }
 
-  //if dataByMonth not empty
-  if(dataByMonth){
-    
-    //iterate through the array to sum all the expenses per month 
-    for(let i = 1; i < dataByMonth.length; i++){
-      console.log(dataByMonth);
-      for(let j = 1; j < dataByMonth[i].length; j++){
-        dataByMonth[i][1] += dataByMonth[i][j]; //
-      } 
-    }
-  }
-
   console.log(dataByMonth);
 
 
@@ -176,21 +164,24 @@ const  Home = function(props:any) {
             </HStack>
           </Flex>
 
+          <Text textAlign={"center"}>
+              Here are your expenses for {dateFilter}
+          </Text>
           <Flex alignItems={"center"} padding={10} justifyContent={"space-evenly"}>
             {/*change top box to bar chart for user expenses*/}
               <Box>
-              <Chart type='Bar' data={dataByUserName} options={{title:"Users"}}/> 
+              <Chart type='Bar' data={dataByUserName} options={{title:"Expenses Per User"}}/> 
               </Box>
               <Box>
-              <Chart type='PieChart' data={dataByCategories} options={{title:"Categories"}}/> 
+              <Chart type='PieChart' data={dataByCategories} options={{title:"Expenses By Category"}}/> 
               </Box>
           </Flex>
-              <Box>
-              <Chart type='BarChart' data={dataByMonth} options={{title:"monthly expense"}}/> 
-              </Box>
           <Text textAlign={"center"}>
-                  Total Expenses: {totalExpeness}
-                </Text>
+              Total Expenses: {totalExpeness} NIS
+          </Text>
+          <Box>
+            <Chart type='ComboChart' data={dataByMonth} options={{title:"Expenses By Month"}}/> 
+          </Box>
         </main>
 
   )

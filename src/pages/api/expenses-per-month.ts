@@ -17,6 +17,7 @@ const dbRes = (await  prisma.$queryRawUnsafe(`
     SELECT u.user_name, cast(sum(up.amount) as int), EXTRACT(MONTH FROM up.date_created) AS month
     from userproducts up join users u on up.fk_user_id = u.pk_id
     where fk_group_id='${groupId}'
+    ${userQuery}
     group by u.user_name, month
 `)) as any[];
 
@@ -38,6 +39,13 @@ dbRes.forEach((d)=>{
   //const user = d.user_name;
   monthAndAmount[month].push(amount)
 })
+
+//in case the month has no expenses add 0 to array for data display
+for(let i = 0; i < monthAndAmount.length; i++){
+  if(monthAndAmount[i].length < 2){
+    monthAndAmount[i].push(0);
+  }
+}
 
 console.log(monthAndAmount)
 
