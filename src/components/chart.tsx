@@ -1,5 +1,5 @@
 import { Alert, AlertDescription, AlertIcon, Box, Spinner } from "@chakra-ui/react";
-import { Chart, GoogleChartWrapperChartType } from "react-google-charts";
+import { Chart, GoogleChartWrapperChartType, GoogleChartOptions, ChartWrapperOptions } from "react-google-charts";
 
 
 type PieChartProps = {
@@ -14,7 +14,7 @@ const Loader = function(){
   return <span>Loading...</span>
 }
 
-const PieChart = function(props:PieChartProps) {
+const PieChart = function(props:GoogleChartOptions) {
 
   if(!props.data){
     return <Box  height={"400px"}>

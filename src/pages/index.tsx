@@ -9,6 +9,7 @@ import { Box, Button, ChakraProvider, Flex, FormControl, HStack, Heading, Icon, 
 import { CalendarIcon } from '@chakra-ui/icons'
 import Header from '@/components/heading'
 import DateFilters from '@/components/date-filters'
+import { color } from 'framer-motion'
 
 type ServerUsersAndGroups = {
   groupName:string,
@@ -20,7 +21,14 @@ type ServerUsersAndGroups = {
 
 const inter = Inter({ subsets: ['latin'] })
 
-const  Home = function(props:any) {
+const valueToDateMap:Record<string|number, any> = {
+  1:'Last 7 days',
+  2: 'Last 30 days',
+  7: 'Last 6 month',
+  all: 'All Time'
+}
+
+  const  Home = function(props:any) {
 
   const user = getFromStorage('user') as User
 
@@ -29,6 +37,7 @@ const  Home = function(props:any) {
   const [selectedUser,setSelectedUser] = React.useState<any>(null)
   const [dataByCategories,setDataByCategories] = React.useState<(string | number)[][]>()
   const [dataByUserName,setDataByUserName] = React.useState<(string | number)[][]>()
+  const [dataByMonth, setDataByMonth] = React.useState<(string | number)[][]>()
   const [dateFilter,setDateFilter]= React.useState<string | number>('all')
   const [isAdmin,setIsAdmin]= React.useState(false)
   const [totalExpeness,setTotalEpensess]= React.useState(0)
@@ -79,7 +88,20 @@ const  Home = function(props:any) {
   const {userNameAndAmountDic,totalExpenses} = await res.json()
   setDataByUserName(userNameAndAmountDic)
   setTotalEpensess(totalExpenses)
-}
+  }
+
+  const getDataByMonth = async function(userId:string,groupId:string){
+    const res  = await fetch("/api/expenses-per-month",{
+      method:"POST",
+      body:JSON.stringify({
+        groupId,
+        userId:userId === "all" ? null:userId,
+      })
+  }) 
+  const {monthAndAmount} = await res.json()
+  console.log({monthAndAmount})
+  setDataByMonth(monthAndAmount)
+  }
   
   const onGroupSelect = function(e:React.ChangeEvent<HTMLSelectElement>){
     const groupId = e.target.value;
@@ -103,33 +125,38 @@ const  Home = function(props:any) {
 
   React.useEffect(()=>{
     if(selectedGroup === null) return
-     getProducts(selectedUser,selectedGroup)
-    getUserAmount(selectedUser,selectedGroup)
+      getProducts(selectedUser,selectedGroup)
+      getUserAmount(selectedUser,selectedGroup)
+      getDataByMonth(selectedUser,selectedGroup)
   },[selectedGroup,selectedUser,dateFilter])
 
   if(!user){
     return <div>Loading..</div>
   }
 
+  console.log(dataByMonth);
+
+
   return (
    
         <main className={inter.className}>
-          <HStack>
-            <img src="/iconBlueNew.png" alt="Icon" width={100} />
-            <Box  padding="10px">
-              <Header isAdmin={isAdmin} user={user} onLogout={onLogout} />
-            </Box>
-          </HStack>
+          <Header isAdmin={isAdmin} user={user} onLogout={onLogout}/>
 
           <Flex padding="10px" alignItems={"center"}>
             <HStack spacing={5}>
+              <Text textAlign={"left"} margin={2}>
+                Groups:
+              </Text>
               <Box w="150px">
                 {/*Show Groups  */}
                 <Select size="sm" defaultValue={groups[selectedGroup]?.groupName} onChange={onGroupSelect}>
                 {Object.values(groups)?.map((gr)=><option key={gr.groupId} value={gr.groupId}>{gr.groupName}</option>)}
                 </Select>
-              </Box>
+              </Box>  
 
+              <Text textAlign={"left"} margin={2}>
+                Users:
+              </Text>
               <Box w="150px">
                 {/* Show Users */}
                 <Select size="sm" value={selectedUser} defaultValue={selectedUser} onChange={onUserSelect}>
@@ -147,18 +174,27 @@ const  Home = function(props:any) {
             </HStack>
           </Flex>
 
+          <Text textAlign={"left"} margin={5}>
+              Here are your expenses for {valueToDateMap[dateFilter]}:
+          </Text>
           <Flex alignItems={"center"} padding={10} justifyContent={"space-evenly"}>
             {/*change top box to bar chart for user expenses*/}
-           <Box>
-           <Chart type='Bar' data={dataByUserName} options={{title:"Users"}}/> 
-           </Box>
-        <Box>
-        <Chart type='PieChart' data={dataByCategories} options={{title:"Categories"}}/> 
-        </Box>
+              <Box>
+              <Chart type='Bar' data={dataByUserName} options={{title:"Expenses Per User"}} backgroundColor='white'/> 
+              </Box>
+              <Box>
+              <Chart type='PieChart' data={dataByCategories} options={{title:"Expenses By Category"}} backgroundColor='white'/> 
+              </Box>
           </Flex>
-          <Text textAlign={"center"}>
-                  Total Expenses: {totalExpeness}
-                </Text>
+          <Text textAlign={"center"} > 
+              Total Expenses: {totalExpeness} NIS
+          </Text>
+          <Text textAlign={"left"} margin={5}> 
+              Here are your expenses per month:
+          </Text>
+          <Box width={1000} margin={'auto'}>
+            <Chart type='Line' data={dataByMonth} options={{title:"Expenses By Month"}} backgroundColor='white'/> 
+          </Box>
         </main>
 
   )
