@@ -20,7 +20,14 @@ type ServerUsersAndGroups = {
 
 const inter = Inter({ subsets: ['latin'] })
 
-const  Home = function(props:any) {
+const valueToDateMap:Record<string|number, any> = {
+  1:'Last 7 days',
+  2: 'Last 30 days',
+  7: 'Last 6 month',
+  all: 'All Time'
+}
+
+  const  Home = function(props:any) {
 
   const user = getFromStorage('user') as User
 
@@ -91,6 +98,7 @@ const  Home = function(props:any) {
       })
   }) 
   const {monthAndAmount} = await res.json()
+  console.log({monthAndAmount})
   setDataByMonth(monthAndAmount)
   }
   
@@ -131,22 +139,26 @@ const  Home = function(props:any) {
   return (
    
         <main className={inter.className}>
-          <HStack>
-            <img src="/iconBlueNew.png" alt="Icon" width={100} />
+            {/* <img src="/iconBlueNew.png" alt="Icon" width={100} /> */}
             <Box  padding="10px">
               <Header isAdmin={isAdmin} user={user} onLogout={onLogout} />
             </Box>
-          </HStack>
 
           <Flex padding="10px" alignItems={"center"}>
             <HStack spacing={5}>
+              <Text textAlign={"left"} margin={2}>
+                Groups:
+              </Text>
               <Box w="150px">
                 {/*Show Groups  */}
                 <Select size="sm" defaultValue={groups[selectedGroup]?.groupName} onChange={onGroupSelect}>
                 {Object.values(groups)?.map((gr)=><option key={gr.groupId} value={gr.groupId}>{gr.groupName}</option>)}
                 </Select>
-              </Box>
+              </Box>  
 
+              <Text textAlign={"left"} margin={2}>
+                Users:
+              </Text>
               <Box w="150px">
                 {/* Show Users */}
                 <Select size="sm" value={selectedUser} defaultValue={selectedUser} onChange={onUserSelect}>
@@ -164,23 +176,26 @@ const  Home = function(props:any) {
             </HStack>
           </Flex>
 
-          <Text textAlign={"center"}>
-              Here are your expenses for {dateFilter}
+          <Text textAlign={"center"} margin={5}>
+              Here are your expenses for {valueToDateMap[dateFilter]}
           </Text>
           <Flex alignItems={"center"} padding={10} justifyContent={"space-evenly"}>
             {/*change top box to bar chart for user expenses*/}
               <Box>
-              <Chart type='Bar' data={dataByUserName} options={{title:"Expenses Per User"}}/> 
+              <Chart type='Bar' data={dataByUserName} options={{title:"Expenses Per User"}} backgroundColor='white'/> 
               </Box>
               <Box>
-              <Chart type='PieChart' data={dataByCategories} options={{title:"Expenses By Category"}}/> 
+              <Chart type='PieChart' data={dataByCategories} options={{title:"Expenses By Category"}} backgroundColor='white'/> 
               </Box>
           </Flex>
-          <Text textAlign={"center"}>
+          <Text textAlign={"center"} > 
               Total Expenses: {totalExpeness} NIS
           </Text>
-          <Box>
-            <Chart type='ComboChart' data={dataByMonth} options={{title:"Expenses By Month"}}/> 
+          <Text textAlign={"left"} margin={10}> 
+              Here are your expenses per month:
+          </Text>
+          <Box width={1000} margin={'auto'}>
+            <Chart type='Line' data={dataByMonth} options={{title:"Expenses By Month"}} backgroundColor='white'/> 
           </Box>
         </main>
 

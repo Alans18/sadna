@@ -1,4 +1,4 @@
-import { Heading, Spacer, Button } from "@chakra-ui/react"
+import { Heading, Spacer, Button, Flex } from "@chakra-ui/react"
 
 
 type HeaderProps = {
@@ -18,7 +18,10 @@ const Header = function(props:HeaderProps){
       fontSize={24}
       letterSpacing={-0.5}
     >
-      Hello   <span>{props.user?.user_name || ""}  {props.isAdmin ? " (admin user)" : "" } </span> 
+      <Flex alignItems={'center'}>
+        <img src="/iconBlueNew.png" alt="Icon" width={120}/>
+        <p>Hello   <span>{props.user?.user_name || ""}  {props.isAdmin ? " (admin user)" : "" } </span> </p>
+      </Flex>
     </Heading>
     <Spacer />
     <Button  colorScheme='red' height={8} margin={'1rem'} onClick={props.onLogout}>logout</Button>
