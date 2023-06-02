@@ -28,26 +28,14 @@ const dbRes = (await  prisma.$queryRawUnsafe(`
     group by u.user_name
 `)) as any[];
 
-console.log(dbRes)
-// SELECT u.user_name, cast(sum(up.amount) as int), EXTRACT(MONTH FROM up.date_created) AS month
-// from userproducts up join users u on up.fk_user_id = u.pk_id
-// where fk_group_id='${groupId}'
-// ${userQuery}
-// ${dateQuery}
-// group by u.user_name, up.date_created
-
-
 const userNameAndAmountDic:any[] = [["user name","amount"]]
-//const monthAndAmount:any[] = [["month","amount"],[1,],[2,],[3,],[4,],[5,],[6,],[7,],[8,],[9,],[10,],[11,],[12,]]
 
 let totalExpenses = 0;
 dbRes.forEach((d)=>{
   const amount = d.sum;
   const userName = d.user_name
-  //const month = d.month
   totalExpenses+= amount;
   userNameAndAmountDic.push([userName,amount])
-  //monthAndAmount[month].push(amount)
 })
 
 res.status(200).json({userNameAndAmountDic,totalExpenses})//,monthAndAmount})
