@@ -22,8 +22,6 @@ const dbRes = (await  prisma.$queryRawUnsafe(`
 `)) as any[];
 
 const monthAndAmount:any[] = [["month","amount"],[1,],[2,],[3,],[4,],[5,],[6,],[7,],[8,],[9,],[10,],[11,],[12,]]
-                             // ["January",],["February",],["March",],["April",],["May",],
-                             // ["June",],["July",],["August",],["September",],["October",],["November",],["December",]]
 
 let totalExpenses = 0;
 dbRes.forEach((d)=>{

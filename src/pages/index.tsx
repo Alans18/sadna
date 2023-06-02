@@ -9,6 +9,7 @@ import { Box, Button, ChakraProvider, Flex, FormControl, HStack, Heading, Icon, 
 import { CalendarIcon } from '@chakra-ui/icons'
 import Header from '@/components/heading'
 import DateFilters from '@/components/date-filters'
+import { color } from 'framer-motion'
 
 type ServerUsersAndGroups = {
   groupName:string,
@@ -36,7 +37,7 @@ const valueToDateMap:Record<string|number, any> = {
   const [selectedUser,setSelectedUser] = React.useState<any>(null)
   const [dataByCategories,setDataByCategories] = React.useState<(string | number)[][]>()
   const [dataByUserName,setDataByUserName] = React.useState<(string | number)[][]>()
-  const [dataByMonth, setDataByMonth] = React.useState<(number | number)[][]>()
+  const [dataByMonth, setDataByMonth] = React.useState<(string | number)[][]>()
   const [dateFilter,setDateFilter]= React.useState<string | number>('all')
   const [isAdmin,setIsAdmin]= React.useState(false)
   const [totalExpeness,setTotalEpensess]= React.useState(0)
@@ -139,10 +140,7 @@ const valueToDateMap:Record<string|number, any> = {
   return (
    
         <main className={inter.className}>
-            {/* <img src="/iconBlueNew.png" alt="Icon" width={100} /> */}
-            <Box  padding="10px">
-              <Header isAdmin={isAdmin} user={user} onLogout={onLogout} />
-            </Box>
+          <Header isAdmin={isAdmin} user={user} onLogout={onLogout}/>
 
           <Flex padding="10px" alignItems={"center"}>
             <HStack spacing={5}>
@@ -176,8 +174,8 @@ const valueToDateMap:Record<string|number, any> = {
             </HStack>
           </Flex>
 
-          <Text textAlign={"center"} margin={5}>
-              Here are your expenses for {valueToDateMap[dateFilter]}
+          <Text textAlign={"left"} margin={5}>
+              Here are your expenses for {valueToDateMap[dateFilter]}:
           </Text>
           <Flex alignItems={"center"} padding={10} justifyContent={"space-evenly"}>
             {/*change top box to bar chart for user expenses*/}
@@ -191,7 +189,7 @@ const valueToDateMap:Record<string|number, any> = {
           <Text textAlign={"center"} > 
               Total Expenses: {totalExpeness} NIS
           </Text>
-          <Text textAlign={"left"} margin={10}> 
+          <Text textAlign={"left"} margin={5}> 
               Here are your expenses per month:
           </Text>
           <Box width={1000} margin={'auto'}>
