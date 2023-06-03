@@ -22,10 +22,10 @@ type ServerUsersAndGroups = {
 const inter = Inter({ subsets: ['latin'] })
 
 const valueToDateMap:Record<string|number, any> = {
-  1:'Last 7 days',
-  2: 'Last 30 days',
-  7: 'Last 6 month',
-  all: 'All Time'
+  1:'from the last 7 days',
+  2: 'from the last 30 days',
+  7: 'from the last 6 month',
+  all: 'from all times'
 }
 
   const  Home = function(props:any) {
@@ -116,7 +116,7 @@ const valueToDateMap:Record<string|number, any> = {
 
   React.useEffect(()=>{
     if(!user){
-      router.push("/login")
+      router.push("/home")
       return
     }
     getUserGroups()
@@ -175,7 +175,7 @@ const valueToDateMap:Record<string|number, any> = {
           </Flex>
 
           <Text textAlign={"left"} margin={5}>
-              Here are your expenses for {valueToDateMap[dateFilter]}:
+              Here are your expenses {valueToDateMap[dateFilter]}:
           </Text>
           <Flex alignItems={"center"} padding={10} justifyContent={"space-evenly"}>
             {/*change top box to bar chart for user expenses*/}
