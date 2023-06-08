@@ -24,7 +24,7 @@ const inter = Inter({ subsets: ['latin'] })
 const valueToDateMap:Record<string|number, any> = {
   1:'from the last 7 days',
   2: 'from the last 30 days',
-  7: 'from the last 6 month',
+  7: 'from the last 6 months',
   all: 'from all times'
 }
 
@@ -174,7 +174,7 @@ const valueToDateMap:Record<string|number, any> = {
             </HStack>
           </Flex>
 
-          <Text textAlign={"left"} margin={5}>
+          <Text textAlign={"left"} margin={5} fontWeight="bold" textDecoration="underline">
               Here are your expenses {valueToDateMap[dateFilter]}:
           </Text>
           <Flex alignItems={"center"} padding={10} justifyContent={"space-evenly"}>
@@ -186,10 +186,10 @@ const valueToDateMap:Record<string|number, any> = {
               <Chart type='PieChart' data={dataByCategories} options={{title:"Expenses By Category"}} backgroundColor='white'/> 
               </Box>
           </Flex>
-          <Text textAlign={"center"} > 
+          <Text textAlign={"center"}>
               Total Expenses: {totalExpeness} NIS
           </Text>
-          <Text textAlign={"left"} margin={5}> 
+          <Text textAlign={"left"} margin={5} fontWeight="bold" textDecoration="underline" paddingBottom={5}> 
               Here are your expenses per month:
           </Text>
           <Box width={1000} margin={'auto'}>
