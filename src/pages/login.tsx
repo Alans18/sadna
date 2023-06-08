@@ -34,10 +34,16 @@ const Login = function(){
              setError(error)
             }
 
+
     }
+
+    const handleHomePage = () => {
+        router.push('/home');
+    };
 
     return(
         <Box>
+            <Button colorScheme="telegram" height={8} margin={'1rem'} onClick={handleHomePage} marginRight={2}>Home Page</Button>
             <VStack as="header" spacing="2" m="8" marginBottom={2}>
                 <Heading 
                     as="h1" 
