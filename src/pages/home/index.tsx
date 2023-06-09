@@ -1,5 +1,7 @@
 import React from 'react';
 import { useRouter } from 'next/router';
+import { Button } from '@chakra-ui/react'
+
 
 const HomePage = () => {
     const router = useRouter();
@@ -12,9 +14,9 @@ const HomePage = () => {
         <div className="flex flex-col min-h-screen bg-gray-100">
             <div className="flex justify-end p-4">
                 <div className="ml-auto">
-                    <button onClick={handleLogin} className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                    <Button onClick={handleLogin} variant={"outline"} colorScheme="telegram" className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
                         Login
-                    </button>
+                    </Button>
                 </div>
             </div>
             <div className=" p-6 ml-12 flex items-center justify-start flex-grow">
