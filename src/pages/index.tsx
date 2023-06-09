@@ -5,11 +5,13 @@ import { User } from '@/types/user'
 import { useRouter } from 'next/router'
 import dynamic from 'next/dynamic';
 import Chart from '@/components/chart'
-import { Box, Button, ChakraProvider, Flex, FormControl, HStack, Heading, Icon, Input, Select, Spacer, Text, VStack } from '@chakra-ui/react'
+import { Box, Button, ChakraProvider, Divider, Flex, FormControl, HStack, Heading, Icon, Input, Select, Spacer, Text, VStack } from '@chakra-ui/react'
 import { CalendarIcon } from '@chakra-ui/icons'
 import Header from '@/components/heading'
 import DateFilters from '@/components/date-filters'
 import { color } from 'framer-motion'
+import { title } from 'process'
+import { verify } from 'crypto'
 
 type ServerUsersAndGroups = {
   groupName:string,
@@ -149,7 +151,7 @@ const valueToDateMap:Record<string|number, any> = {
               </Text>
               <Box w="150px">
                 {/*Show Groups  */}
-                <Select size="sm" defaultValue={groups[selectedGroup]?.groupName} onChange={onGroupSelect}>
+                <Select variant={"flushed"} size="sm" defaultValue={groups[selectedGroup]?.groupName} onChange={onGroupSelect}>
                 {Object.values(groups)?.map((gr)=><option key={gr.groupId} value={gr.groupId}>{gr.groupName}</option>)}
                 </Select>
               </Box>  
@@ -159,7 +161,7 @@ const valueToDateMap:Record<string|number, any> = {
               </Text>
               <Box w="150px">
                 {/* Show Users */}
-                <Select size="sm" value={selectedUser} defaultValue={selectedUser} onChange={onUserSelect}>
+                <Select variant={"flushed"} size="sm" value={selectedUser} defaultValue={selectedUser} onChange={onUserSelect}>
                 <option value="all">All</option>
                 {groups[selectedGroup]?.users?.map((user)=><option key={user.id} value={user.id}>{user.name}</option>)}
                 </Select>
@@ -180,10 +182,25 @@ const valueToDateMap:Record<string|number, any> = {
           <Flex alignItems={"center"} padding={10} justifyContent={"space-evenly"}>
             {/*change top box to bar chart for user expenses*/}
               <Box>
-              <Chart type='Bar' data={dataByUserName} options={{title:"Expenses Per User"}} backgroundColor='white'/> 
+              <Chart 
+                type='Bar' 
+                data={dataByUserName} 
+                options={
+                  {chart:{
+                    title:"Expenses By User"}, 
+                    series: {
+                      0: { axis: "Temps" },
+                    },
+                    axes: {
+                      y: {
+                        Temps: { label: "Amount" },
+                      }
+                    }}} backgroundColor='white'/> 
               </Box>
               <Box>
-              <Chart type='PieChart' data={dataByCategories} options={{title:"Expenses By Category"}} backgroundColor='white'/> 
+                <div id="pie-chart">
+                  <Chart type='PieChart' data={dataByCategories} options={{title:"Expenses By Category"}} backgroundColor='white'/> 
+                </div>
               </Box>
           </Flex>
           <Text textAlign={"center"}>
@@ -193,7 +210,22 @@ const valueToDateMap:Record<string|number, any> = {
               Here are your expenses per month:
           </Text>
           <Box width={1000} margin={'auto'}>
-            <Chart type='Line' data={dataByMonth} options={{title:"Expenses By Month"}} backgroundColor='white'/> 
+            <Chart type='Line' 
+              data={dataByMonth} 
+              options={ 
+                {chart:{
+                    title:"Expenses By Month"},
+                    series: {
+                      0: { axis: "Temps" },
+                    },
+                    axes: {
+                      y: {
+                        Temps: { label: "Amount" },
+                      }
+                    }
+                  }
+                }
+              backgroundColor='white'/> 
           </Box>
         </main>
 

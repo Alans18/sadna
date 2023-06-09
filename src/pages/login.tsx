@@ -43,7 +43,7 @@ const Login = function(){
 
     return(
         <Box>
-            <Button colorScheme="telegram" height={8} margin={'1rem'} onClick={handleHomePage} marginRight={2}>Home Page</Button>
+            <Button variant={"outline"} colorScheme="telegram" height={8} margin={'1rem'} onClick={handleHomePage} marginRight={2}>Home Page</Button>
             <VStack as="header" spacing="2" m="8" marginBottom={2}>
                 <Heading 
                     as="h1" 
@@ -100,8 +100,7 @@ const Login = function(){
                                         type= "submit"
                                         colorScheme="telegram"
                                         size="sm" 
-                                        _hover={{bg: "#003FBC"}} 
-                                        _active={{bg: "darkblue"}}
+                                        variant={"outline"}
                                     >
                                         Login
                                     </Button>
