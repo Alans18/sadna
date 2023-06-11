@@ -38,7 +38,7 @@ const HomePage = () => {
                     </div>
                 </div>
                 <div className="flex-grow flex items-center justify-center">
-                    <video className="w-3/10 rounded-md shadow-xl" autoPlay loop muted>
+                    <video className="rounded-md shadow-xl" width={350} height={"auto"} autoPlay loop muted>
                         <source src="/vid.mp4" type="video/mp4" />
                         Your browser does not support the video tag.
                     </video>
